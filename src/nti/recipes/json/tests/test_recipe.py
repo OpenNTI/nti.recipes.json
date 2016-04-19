@@ -20,11 +20,19 @@ class TestRecipe(TestCase):
 		self.buildout[contents_section]['foo'] = "foo"
 		self.buildout[contents_section]['bar'] = "bar"
 		self.buildout[contents_section]['baz-section'] = "test-baz"
+		self.buildout[contents_section]['bazbaz-section'] = "test-bazbaz"
 		baz_section = self.buildout[contents_section]['baz-section']
 		self.buildout[baz_section] = {}
 		self.buildout[baz_section]['foo'] = "foo"
 		self.buildout[baz_section]['bar'] = "bar"
 		self.buildout[baz_section]['baz'] = "baz"
+		self.buildout[baz_section]['foobar'] = """line 1
+		test-bazbaz-section
+		line 3
+		line 4"""
+		bazbaz_section = self.buildout[contents_section]['bazbaz-section']
+		self.buildout[bazbaz_section] = {}
+		self.buildout[bazbaz_section]['foo'] = "myfoo"
 
 	def test_recipe( self ):
 		recipe = Recipe(self.buildout, self.name, self.buildout[self.name])
@@ -34,6 +42,8 @@ class TestRecipe(TestCase):
 		assert_that( baz, has_entry('foo', 'foo'))
 		assert_that( baz, has_entry('bar', 'bar'))
 		assert_that( baz, has_entry('baz', 'baz'))
+		bazbaz = recipe.contents['baz']['foobar'][1]
+		assert_that( bazbaz, has_entry('foo', 'myfoo'))
 
 	def test_install( self ):
 		recipe = Recipe(self.buildout, self.name, self.buildout[self.name])

@@ -35,5 +35,11 @@ class Recipe(object):
 			if '-section' in option:
 				_me[option.replace('-section', '')] = self._process_section(buildout, section[option])
 			else:
-				_me[option] = section[option]
+				_me[option] = []
+				for _o in section[option].split('\n'):
+					_me[option].append(_o.strip())
+					if '-section' in _me[option][-1]:
+						_me[option][-1] = self._process_section(buildout, _me[option][-1].replace('-section', ''))
+				if len(_me[option]) == 1:
+					_me[option] = _me[option][0]
 		return _me
