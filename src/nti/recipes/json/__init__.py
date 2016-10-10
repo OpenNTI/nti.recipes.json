@@ -42,4 +42,6 @@ class Recipe(object):
 						_me[option][-1] = self._process_section(buildout, _me[option][-1].replace('-section', ''))
 				if len(_me[option]) == 1:
 					_me[option] = _me[option][0]
+				elif _me[option][-1] == '**end-list**':
+					del _me[option][-1]
 		return _me
