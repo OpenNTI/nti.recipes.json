@@ -8,8 +8,11 @@ from __future__ import absolute_import
 # pylint: disable=protected-access,too-many-public-methods,arguments-differ
 
 from hamcrest import is_
-from hamcrest import has_entry
+from hamcrest import not_none
 from hamcrest import assert_that
+from hamcrest import has_entries
+from hamcrest import has_property
+from hamcrest import contains_inanyorder
 
 import os
 import time
@@ -31,8 +34,8 @@ class TestRecipe(unittest.TestCase):
         self.buildout[contents_section] = {}
         self.buildout[contents_section]['foo'] = "foo"
         self.buildout[contents_section]['bar'] = "bar"
-        self.buildout[contents_section]['foo-bool'] = "true"
-        self.buildout[contents_section]['bar-bool'] = "False"
+        self.buildout[contents_section]['foo_bool'] = "true"
+        self.buildout[contents_section]['bar_bool'] = "False"
         self.buildout[contents_section]['baz-section'] = "test-baz"
         self.buildout[contents_section]['bazbaz-section'] = "test-bazbaz"
         baz_section = self.buildout[contents_section]['baz-section']
@@ -50,14 +53,27 @@ class TestRecipe(unittest.TestCase):
 
     def test_recipe(self):
         recipe = Recipe(self.buildout, self.name, self.buildout[self.name])
-        assert_that(recipe.contents, has_entry('foo', 'foo'))
-        assert_that(recipe.contents, has_entry('bar', 'bar'))
-        baz = recipe.contents['baz']
-        assert_that(baz, has_entry('foo', 'foo'))
-        assert_that(baz, has_entry('bar', 'bar'))
-        assert_that(baz, has_entry('baz', 'baz'))
-        bazbaz = recipe.contents['baz']['foobar'][1]
-        assert_that(bazbaz, has_entry('foo', 'myfoo'))
+        assert_that(recipe,
+                    has_property('contents',
+                                 has_entries('foo', 'foo',
+                                             'bar', 'bar',
+                                             'foo_bool', True,
+                                             'bar_bool', False,
+                                             'baz', is_(not_none()),
+                                             'bazbaz', is_(not_none()))))
+        assert_that(recipe.contents['baz'],
+                    has_entries('foo', 'foo',
+                                'bar', 'bar',
+                                'baz', 'baz',
+                                'foobar', contains_inanyorder('line 1', {'foo': 'myfoo'}, 'line 3', 'line 4')))
+
+        assert_that(recipe.contents['baz'],
+                    has_entries('foo', 'foo',
+                                'bar', 'bar',
+                                'baz', 'baz',
+                                'foobar', contains_inanyorder('line 1', {'foo': 'myfoo'}, 'line 3', 'line 4')))
+        assert_that(recipe.contents['bazbaz'],
+                    has_entries('foo', 'myfoo'))
 
     def test_install(self):
         name = "%s_%s" % (self.name, time.time())
