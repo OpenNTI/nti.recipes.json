@@ -41,9 +41,9 @@ class Recipe(object):
             if '-section' in option:
                 name = option.replace('-section', '')
                 _me[name] = self._process_section(buildout, section[option])
-            elif section[option] == "true" or section[option] == "True":
+            elif section[option] in ("true", "True"):
                 _me[option] = True
-            elif section[option] == "false" or section[option] == "False":
+            elif section[option] in ("false", "False"):
                 _me[option] = False
             else:
                 _me[option] = []
