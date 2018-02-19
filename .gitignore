@@ -1,5 +1,16 @@
+*.py[cod]
+
+/.project
+/.pydevproject
+/.settings/
+
+*.DS_Store
+
+# Distribution / packaging
 build/
 dist/
-*.egg-info
-*.pyc
-*.pyo
+/.tox/
+
+.coverage
+htmlcov/
+docs/_build/
