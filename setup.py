@@ -11,8 +11,7 @@ entry_points = {
 }
 
 TESTS_REQUIRE = [
-    'fudge',
-    'zope.dottedname',
+    'pyhamcrest',
     'zope.testrunner',
 ]
 
