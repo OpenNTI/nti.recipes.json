@@ -7,15 +7,17 @@ from __future__ import absolute_import
 
 # pylint: disable=protected-access,too-many-public-methods,arguments-differ
 
+from hamcrest import is_
+from hamcrest import has_entry
+from hamcrest import assert_that
+
 import os
+import unittest
 
-from hamcrest import assert_that, is_, has_entry, has_length
-from unittest import TestCase
-
-from .. import Recipe
+from nti.recipes.json import Recipe
 
 
-class TestRecipe(TestCase):
+class TestRecipe(unittest.TestCase):
 
     def setUp(self):
         self.name = 'test'
