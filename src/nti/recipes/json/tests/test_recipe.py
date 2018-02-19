@@ -30,6 +30,7 @@ class TestRecipe(unittest.TestCase):
         self.buildout[self.name]['output-file'] = 'foo.json'
         self.buildout[self.name]['contents-section'] = 'test-main'
         self.buildout[self.name]['recipe'] = 'nti.recipe.json'
+
         contents_section = self.buildout[self.name]['contents-section']
         self.buildout[contents_section] = {}
         self.buildout[contents_section]['foo'] = "foo"
@@ -38,6 +39,10 @@ class TestRecipe(unittest.TestCase):
         self.buildout[contents_section]['bar_bool'] = "False"
         self.buildout[contents_section]['baz-section'] = "test-baz"
         self.buildout[contents_section]['bazbaz-section'] = "test-bazbaz"
+
+        self.buildout[contents_section]['node-section'] = "node-section"
+        self.buildout[contents_section]['external-libraries'] = "external-libraries"
+
         baz_section = self.buildout[contents_section]['baz-section']
         self.buildout[baz_section] = {}
         self.buildout[baz_section]['foo'] = "foo"
@@ -51,6 +56,16 @@ class TestRecipe(unittest.TestCase):
         self.buildout[bazbaz_section] = {}
         self.buildout[bazbaz_section]['foo'] = "myfoo"
 
+        node_section = self.buildout[contents_section]['node-section']
+        self.buildout[node_section] = {}
+        self.buildout[node_section]['jquery-section'] = "external-libraries"
+
+        external_section = self.buildout[contents_section]['external-libraries']
+        self.buildout[external_section] = {
+            'requires': '\n'.join(['jquery', 'stripe', '**end-list**']),
+            'definesSymbol':  'jQuery.payment'
+        }
+
     def test_recipe(self):
         recipe = Recipe(self.buildout, self.name, self.buildout[self.name])
         assert_that(recipe,
@@ -60,6 +75,7 @@ class TestRecipe(unittest.TestCase):
                                              'foo_bool', True,
                                              'bar_bool', False,
                                              'baz', is_(not_none()),
+                                             'node', is_(not_none()),
                                              'bazbaz', is_(not_none()))))
         assert_that(recipe.contents['baz'],
                     has_entries('foo', 'foo',
@@ -74,6 +90,11 @@ class TestRecipe(unittest.TestCase):
                                 'foobar', contains_inanyorder('line 1', {'foo': 'myfoo'}, 'line 3', 'line 4')))
         assert_that(recipe.contents['bazbaz'],
                     has_entries('foo', 'myfoo'))
+
+        assert_that(recipe.contents['node'],
+                    has_entries('jquery',
+                                has_entries('definesSymbol', 'jQuery.payment',
+                                            'requires', ['jquery', 'stripe'])))
 
     def test_install(self):
         name = "%s_%s" % (self.name, time.time())
