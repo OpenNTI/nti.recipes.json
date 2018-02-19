@@ -35,6 +35,7 @@ setup(
     license='Apache',
     keywords='buildout json',
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'Operating System :: OS Independent',
@@ -44,6 +45,8 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
+        'Framework :: Buildout',
+        'License :: OSI Approved :: Apache Software License',
     ],
     url="https://github.com/NextThought/nti.recipes.json",
     zip_safe=True,
