@@ -12,6 +12,7 @@ from hamcrest import has_entry
 from hamcrest import assert_that
 
 import os
+import time
 import unittest
 
 from nti.recipes.json import Recipe
@@ -30,6 +31,8 @@ class TestRecipe(unittest.TestCase):
         self.buildout[contents_section] = {}
         self.buildout[contents_section]['foo'] = "foo"
         self.buildout[contents_section]['bar'] = "bar"
+        self.buildout[contents_section]['foo-bool'] = "true"
+        self.buildout[contents_section]['bar-bool'] = "False"
         self.buildout[contents_section]['baz-section'] = "test-baz"
         self.buildout[contents_section]['bazbaz-section'] = "test-bazbaz"
         baz_section = self.buildout[contents_section]['baz-section']
@@ -57,27 +60,23 @@ class TestRecipe(unittest.TestCase):
         assert_that(bazbaz, has_entry('foo', 'myfoo'))
 
     def test_install(self):
-        recipe = Recipe(self.buildout, self.name, self.buildout[self.name])
+        name = "%s_%s" % (self.name, time.time())
+        recipe = Recipe(self.buildout, name, self.buildout[self.name])
         filename = recipe.filename
-
-        if os.path.exists(filename):
-            os.unlink(filename)
-
-        recipe.install()
-        assert_that(os.path.exists(filename), is_(True))
-
-        if os.path.exists(filename):
-            os.unlink(filename)
+        try:
+            recipe.install()
+            assert_that(os.path.exists(filename), is_(True))
+        finally:
+            if os.path.exists(filename):
+                os.unlink(filename)
 
     def test_update(self):
-        recipe = Recipe(self.buildout, self.name, self.buildout[self.name])
+        name = "%s_%s" % (self.name, time.time())
+        recipe = Recipe(self.buildout, name, self.buildout[self.name])
         filename = recipe.filename
-
-        if os.path.exists(filename):
-            os.unlink(filename)
-
-        recipe.update()
-        assert_that(os.path.exists(filename), is_(True))
-
-        if os.path.exists(filename):
-            os.unlink(filename)
+        try:
+            recipe.update()
+            assert_that(os.path.exists(filename), is_(True))
+        finally:
+            if os.path.exists(filename):
+                os.unlink(filename)
