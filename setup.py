@@ -23,7 +23,7 @@ def _read(fname):
 
 setup(
     name='nti.recipes.json',
-    version='1.0.0',
+    version='1.0.1.dev0',
     author='Sean Jones',
     author_email='sean.jones@nextthought.com',
     description="zc.buildout recipe that programatically creates JSON files",
