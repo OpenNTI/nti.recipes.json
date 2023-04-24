@@ -48,7 +48,7 @@ setup(
         'Framework :: Buildout',
         'License :: OSI Approved :: Apache Software License',
     ],
-    url="https://github.com/NextThought/nti.recipes.json",
+    url="https://github.com/OpenNTI/nti.recipes.json",
     zip_safe=True,
     packages=find_packages('src'),
     package_dir={'': 'src'},
